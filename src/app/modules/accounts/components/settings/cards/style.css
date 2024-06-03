@@ -1,0 +1,14 @@
+.dropdown-toggle{
+    width: 100% !important;
+    text-align: start !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background-color: #f5f8fa !important;
+}
+.dropdown-menu {
+    width: 100%;
+    left: 0;
+    height: 20vh !important;
+    overflow-y: auto !important;
+  }

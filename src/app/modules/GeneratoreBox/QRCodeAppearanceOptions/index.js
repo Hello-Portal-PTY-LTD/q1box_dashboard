@@ -1,0 +1,5 @@
+export { default as ColorChange } from './ColorChange'
+export { default as Frames } from './Frames'
+export { default as Shapes } from './Shapes'
+export { default as Templates } from './Templates'
+export { default as UploadLogo } from './UploadLogo'

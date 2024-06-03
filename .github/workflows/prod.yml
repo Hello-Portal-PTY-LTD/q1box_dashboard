@@ -1,0 +1,50 @@
+name: prod CI
+
+on:
+  push:
+    branches:
+      - production
+  pull_request:
+    branches:
+      - production
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.17.0'
+      - name: adding env variables
+        run: |
+          echo "PORT=${{ secrets.PORT }}" > .env
+          echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
+          echo "REACT_APP_BASE_LAYOUT_CONFIG_KEY=${{ secrets.REACT_APP_BASE_LAYOUT_CONFIG_KEY }}" >> .env
+          echo "REACT_APP_BOOTSTRAP_DOCS_LINK=${{ secrets.REACT_APP_BOOTSTRAP_DOCS_LINK }}" >> .env
+          echo "REACT_APP_KEY=${{ secrets.REACT_APP_KEY }}" >> .env
+          echo "REACT_APP_MAP_KEY=${{ secrets.REACT_APP_MAP_KEY }}" >> .env
+          echo "REACT_APP_PREVIEW_DOCS_URL=${{ secrets.REACT_APP_PREVIEW_DOCS_URL }}" >> .env
+          echo "REACT_APP_PREVIEW_REACT_URL=${{ secrets.REACT_APP_PREVIEW_REACT_URL }}" >> .env
+          echo "REACT_APP_PREVIEW_URL=${{ secrets.REACT_APP_PREVIEW_URL }}" >> .env
+          echo "REACT_APP_PURCHASE_URL=${{ secrets.REACT_APP_PURCHASE_URL }}" >> .env
+          echo "REACT_APP_QR_API=${{ secrets.REACT_APP_QR_API }}" >> .env
+          echo "REACT_APP_QR_APP=${{ secrets.REACT_APP_QR_APP }}" >> .env
+          echo "REACT_APP_SASS_PATH=${{ secrets.REACT_APP_SASS_PATH }}" >> .env
+          echo "REACT_APP_SASS_VARIABLES_PATH=${{ secrets.REACT_APP_SASS_VARIABLES_PATH }}" >> .env
+          echo "REACT_APP_THEME_API_URL=${{ secrets.REACT_APP_THEME_API_URL }}" >> .env
+          echo "REACT_APP_THEME_DEMO=${{ secrets.REACT_APP_THEME_DEMO }}" >> .env
+          echo "REACT_APP_THEME_NAME=${{ secrets.REACT_APP_THEME_NAME }}" >> .env
+          echo "REACT_APP_VERSION=${{ secrets.REACT_APP_VERSION }}" >> .env
+
+      - name: Install dependencies
+        run: |
+          yarn
+          cd $GITHUB_WORKSPACE || exit 1  # Navigate to the QR-App directory relative to the workspace
+          yarn
+          yarn build
+          pm2 stop 3
+          pm2 restart 3

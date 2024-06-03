@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer qr {
+  .t-left-box {
+    @apply t-top-[9px]  t-left-[9px] eye-box;
+  }
+  .t-right-box {
+    @apply t-top-[9px]  t-right-[9px] eye-box;
+  }
+  .t-bottom-left-box {
+    @apply t-bottom-[9px]  t-left-[9px] eye-box;
+  }
+  .t-bottom-right-box {
+    @apply t-bottom-[22%]   t-right-[40px] small-eye-box;
+  }
+  .t-content-xl {
+    @apply content t-rounded-[50%];
+  }
+  .t-content-sm {
+    @apply content t-rounded-[3px];
+  }
+}
+
+.eye-box {
+  width: 60px;
+  height: 60x;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.small-eye-box {
+  background-color: #ffff;
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-frame {
+  width: 100%;
+  height: 100%;
+  border: 8px dashed black;
+  border-radius: 8px;
+}
+
+.eye-frame-plain-square {
+  width: 100%;
+  height: 100%;
+  border-radius: 0px;
+  border: 7px solid black;
+}
+
+.eye-frame-rounded {
+  width: 100%;
+  height: 100%;
+  border: 8px solid black;
+  border-radius: 15px;
+}
+
+.eye-frame-square-plain-br {
+  width: 100%;
+  height: 100%;
+  border: 8px solid black;
+  border-radius: 8px 8px 0px 8px;
+}
+
+.eye-frame-leaf {
+  width: 100%;
+  height: 100%;
+  border: 8px solid black;
+  border-radius: 18px 0px 18px 0px;
+}
+
+.eye-frame-inner-hexagon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 75%;
+  height: 75%;
+  background-color: #fff;
+  position: relative;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+/*** eye balls ***/
+.eye-ball-circle {
+  background-color: #000000;
+  height: 50%;
+  width: 50%;
+  border-radius: 50%;
+}
+
+.eye-ball-plain-square {
+  background-color: #000000;
+  height: 65%;
+  width: 65%;
+}
+
+.eye-ball-square-plain-br {
+  background-color: #000000;
+  height: 57%;
+  width: 57%;
+  border-radius: 6px 6px 0px 6px;
+}
+
+.eye-ball-square-plain-bl {
+  background-color: #000000;
+  height: 57%;
+  width: 57%;
+  border-radius: 6px 6px 6px 0px;
+}
+
+.eye-ball-square-plain-tr {
+  background-color: #000000;
+  height: 57%;
+  width: 57%;
+  border-radius: 6px 0px 6px 6px;
+}
+
+.eye-ball-square-plain-tl {
+  background-color: #000000;
+  height: 57%;
+  width: 57%;
+  border-radius: 0px 6px 6px 6px;
+}
+
+.eye-ball-hexagon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 65%;
+  width: 65%;
+  background-color: black;
+  position: relative;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+.content {
+  background-color: white;
+  width: 80%;
+  height: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-box > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-frame-dashed {
+  width: 100%;
+  height: 100%;
+  border: 6px dashed black;
+  border-radius: 4px;
+}
+
+.eye-frame-hexagon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  position: relative;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+.eye-frame-circle {
+  width: 100%;
+  height: 100%;
+  border: 8px solid black;
+  border-radius: 50%;
+}
+
+.ant-collapse-header {
+  padding: 0 !important;
+  margin-bottom: 20px;
+}
+.ant-collapse-content-box {
+  padding: 0 !important;
+}
