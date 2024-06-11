@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const axiosInstance = axios.create({
-  baseURL: 'https://www.q1box.com.au/v1'
+  baseURL: process.env.REACT_APP_QR_API,
 })
 
 axiosInstance.interceptors.request.use(

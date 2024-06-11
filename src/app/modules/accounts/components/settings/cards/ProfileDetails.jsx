@@ -4,7 +4,7 @@ import {confirmOtp, updateAuthUser} from 'store/authStore/authAction'
 import * as Yup from 'yup'
 import {useFormik} from 'formik'
 import {useDispatch, useSelector} from 'react-redux'
-import {Spin, message} from 'antd'
+import {Spin, message,Tooltip,Switch} from 'antd'
 import camera from '../../../../../../../src/assets/media/camera.svg'
 import {
   Button as BootstrapButton,
@@ -37,7 +37,7 @@ const profileDetailsSchema = Yup.object().shape({
 // }
 const ProfileDetails = () => {
   const {user} = useSelector((state) => state.auth)
-  // const {billingInfo} = useSelector((state) => state.payment)
+  const {billingInfo} = useSelector((state) => state.payment)
   const [imageloading, setimageLoading] = useState(false)
   const [tempUser, setTempUser] = useState()
 
@@ -48,8 +48,8 @@ const ProfileDetails = () => {
 
   const [modal, setModal] = useState(false)
   const [imgUrl, setImgUrl] = useState(null)
-  // const [SSoEnable, SetSSoEnable] = useState(false)
-  // const [SSoEnableLoading, SetSSoEnableLoading] = useState(false)
+  const [SSoEnable, SetSSoEnable] = useState(false)
+  const [SSoEnableLoading, SetSSoEnableLoading] = useState(false)
   // const [connectAzureAd, setConnectAzureAd] = useState(false)
   // const [editConnectAzureAd, setEditConnectAzureAd] = useState(false)
   // const [connectAzureAdLoading, setConnectAzureAdLoading] = useState(false)
@@ -165,33 +165,33 @@ const ProfileDetails = () => {
   //   return roles[role]
   // }
 
-  // const HandleSSOEnable = (value) => {
-  //   if (user?.role === 'admin' && billingInfo?.plan === 'PROFESSIONAL') {
-  //     SetSSoEnableLoading(true)
-  //     SetSSoEnable(value)
-  //     let data = {
-  //       azureSSOEnables: value,
-  //       email: user.email,
-  //       fullName: user?.firstName + ' ' + user?.lastName,
-  //     }
-  //     axiosInstance
-  //       .post('/users/azure-user-create', data)
-  //       .then((res) => {
-  //         let msg = res?.data?.data || res?.data || 'Successfully!'
-  //         if (res?.data !== 'Status change') message.success(msg)
-  //       })
-  //       .catch((err) => {
-  //         let msg = err?.response?.data?.data || err?.response?.data || 'Error!'
-  //         message.error(msg)
-  //         SetSSoEnable(false)
-  //       })
-  //       .finally(() => {
-  //         SetSSoEnableLoading(false)
-  //         setConnectAzureAd(false)
-  //         setEditConnectAzureAd(false)
-  //       })
-  //   }
-  // }
+  console.log({user})
+  const HandleSSOEnable = (value) => {
+    if (user?.role === 'admin' && billingInfo?.plan === 'PROFESSIONAL') {
+      SetSSoEnableLoading(true)
+      SetSSoEnable(value)
+      let data = {
+        azureSSOEnables: value,
+        email: user.email,
+        fullName: user?.firstName + ' ' + user?.lastName,
+      }
+      axiosInstance
+        .post('/users/azure-user-create', data)
+        .then((res) => {
+          let msg = res?.data?.data || res?.data || 'Successfully!'
+          if (res?.data !== 'Status change') message.success(msg)
+        })
+        .catch((err) => {
+          let msg = err?.response?.data?.data || err?.response?.data || 'Error!'
+          message.error(msg)
+          SetSSoEnable(false)
+        })
+        .finally(() => {
+          SetSSoEnableLoading(false)
+         
+        })
+    }
+  }
 
   // const HandleAzureSync = (value) => {
   //   value.preventDefault()
@@ -502,7 +502,7 @@ const ProfileDetails = () => {
                 </div>
               </div>
             </div>
-            {/* <div className='row mb-6'>
+            <div className='row mb-6'>
               <label className='col-lg-4 col-form-label fw-bold fs-6'>Login With SSO</label>
 
               <div className='col-lg-8'>
@@ -528,132 +528,11 @@ const ProfileDetails = () => {
                   </div>
                 </div>
               </div>
-            </div> */}
-            {/* {user?.role === 'admin' && billingInfo?.plan === 'PROFESSIONAL' && (
-              <div className='cursor-pointer' onClick={() => setConnectAzureAd(true)}>
-                Click here to sync Azure AD
-              </div>
-            )} */}
-          </div>
-
-          <div className='card-footer d-flex justify-content-end py-6 px-9'>
-            <button disabled={imageloading} type='submit' className='btn t-bg-primary t-text-white'>
-              Save Changes
-            </button>
-          </div>
-          {modal && (
-            <div className='t-fixed t-top-0 t-left-0 t-w-[100vw] t-h-[100vh] t-z-[999999] t-bg-[rgba(0,0,0,0.6)] t-flex t-items-center t-justify-center t-px-3'>
-              <div className='t-bg-white t-px-16 t-py-12 t-w-[587px] t-flex t-flex-col t-items-center t-justify-center t-gap-10 t-rounded-2xl'>
-                <div className='  t-w-full '>
-                  <div className='t-flex t-flex-col t-gap-2'>
-                    <h3 className='t-font-semibold t-text-xl md:t-text-2xl lg:t-text-3xl'>
-                      Email Update
-                    </h3>
-                    <p className='t-mb-2'>
-                      A confirmation email has been sent to the email you provided along with an
-                      OPT. Type the OPT below to verify your new email address
-                    </p>
-                  </div>
-                  <FormControl
-                    type='opt'
-                    placeholder='Enter the requested OPT here...'
-                    value={opt}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className='t-flex t-items-center t-justify-between t-gap-12 t-w-full t-text-[16px]'>
-                  <BootstrapButton
-                    variant='secondary'
-                    type='button'
-                    onClick={() => setModal(false)}
-                  >
-                    Cancel
-                  </BootstrapButton>
-                  <BootstrapButton variant='primary' type='button' onClick={handleConfirmOtp}>
-                    Confirm Otp
-                  </BootstrapButton>
-                </div>
-              </div>
-            </div>
-          )}
-        </form>
-      </div>
-
-      {/* {isWelcomeModal && ( */}
-      {/* <Modal
-        show={connectAzureAd}
-        backdrop='static'
-        keyboard={false}
-        onHide={() => {
-          setConnectAzureAd(false)
-          setEditConnectAzureAd(false)
-        }}
-        aria-labelledby='contained-modal-title-vcenter'
-        centered
-      >
-        <Modal.Body>
-          <div className='t-w-full t-flex t-flex-col t-gap-8'>
-            <div>
-              <div
-                onClick={() => {
-                  setConnectAzureAd(false)
-                  setEditConnectAzureAd(false)
-                }}
-                className='t-absolute t-right-8 cursor-pointer'
-              >
-                <img className='t-w-6' src={'/media/svg/qr_dashboard/cross.svg'} alt='cross icon' />
-              </div>
-              <h3 className='t-font-bold t-text-3xl t-text-center t-mb-4'>Sync Azure AD</h3>
-
-              <form onSubmit={HandleAzureSync}>
-                {!editConnectAzureAd && user?.azureSyncStatus ? (
-                  <div className='mt-4'>
-                    <p>Your tenant ID is connected</p>
-                    <p>TenatId: {user?.azureSyncTenantId}</p>
-                    <p onClick={() => setEditConnectAzureAd(true)} className='cursor-pointer mt-2'>
-                      Click here to change tenant id
-                    </p>
-                  </div>
-                ) : (
-                  <div className='row'>
-                    <p className='col-form-label required fw-bold fs-6'>Tenant ID</p>
-                    <div className='col-12 fv-row'>
-                      <input
-                        type='text'
-                        className='form-control form-control-lg form-control-solid mb-3 mb-lg-0'
-                        placeholder='Enter Tenant ID'
-                        name='tenantId'
-                      />
-                    </div>
-                  </div>
-                )}
-                <div className='card-footer d-flex justify-content-end pt-6 px-9 gap-2'>
-                  {editConnectAzureAd && (
-                    <button
-                      onClick={() => setEditConnectAzureAd(false)}
-                      disabled={imageloading}
-                      className='btn t-bg-primary t-text-white'
-                    >
-                      Cancel Edit
-                    </button>
-                  )}
-
-                  {!editConnectAzureAd && user?.azureSyncTenantId ? null : (
-                    <button
-                      type='submit'
-                      disabled={imageloading}
-                      className='btn t-bg-primary t-text-white'
-                    >
-                      Connect {connectAzureAdLoading && 'loading'}
-                    </button>
-                  )}
-                </div>
-              </form>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal> */}
-      {/* )} */}
+            </div> 
+           
+    </div>
+    </form>
+    </div>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import {Tag} from 'antd'
+import {Tag, message} from 'antd'
 import React, {useEffect, useRef, useState} from 'react'
 import {format, parseISO} from 'date-fns'
 import './TeamTable.css'
@@ -7,10 +7,11 @@ import {useDispatch, useSelector} from 'react-redux'
 import {getTeamMembers, updateMember} from 'store/teamStore/teamAction'
 import PaginationComponent from 'app/modules/pagination/pagination'
 import {RootState} from 'store'
-import {Switch} from 'antd'
+import {Switch,Tooltip} from 'antd'
 import {useOnClickOutside} from 'hooks/useOnClickOutside'
 import {KTSVG} from '_metronic/helpers'
-// const {axiosInstance} = require('../../../../../axios/index')
+
+const {axiosInstance} = require('../../../../../axios/index')
 interface TableProps {
   currentOffset: number
   setCurrentOffset: any
@@ -20,10 +21,10 @@ interface TableProps {
 const TeamTable: React.FC<TableProps> = ({currentOffset, setCurrentOffset, actionclick}) => {
   const dispatch = useDispatch()
   const {team} = useSelector((state: RootState) => state.team)
-  // const user = useSelector((state: RootState) => state.auth.user)
-  // const {billingInfo} = useSelector((state: any) => state.payment)
-
-  // const [SSoEnableLoading, SetSSoEnableLoading] = useState({bool: false, email: ''})
+  const user = useSelector((state: RootState) => state.auth.user)
+  const {billingInfo} = useSelector((state: any) => state.payment)
+console.log({billingInfo})
+  const [SSoEnableLoading, SetSSoEnableLoading] = useState({bool: false, email: ''})
   const [edit, setEdit] = useState(false)
 
   const {pagination, list} = team
@@ -51,32 +52,32 @@ const TeamTable: React.FC<TableProps> = ({currentOffset, setCurrentOffset, actio
     dispatch(getTeamMembers({isDeleted: false, offset: offset}))
   }
 
-  // const HandleSSOEnable = (value: boolean, email: string, fullName: string) => {
-  //   if (user?.role === 'admin' && billingInfo?.plan === 'PROFESSIONAL') {
-  //     SetSSoEnableLoading({bool: true, email: email})
-  //     let data = {
-  //       azureSSOEnables: !value,
-  //       email: email,
-  //       fullName: fullName,
-  //     }
-  //     axiosInstance
-  //       .post('/users/azure-user-create', data)
-  //       .then((res: any) => {
-  //         let msg = res?.data?.data || res?.data || 'Successfully!'
-  //         if (res?.data !== 'Status change') message.success(msg)
-  //         console.log(res?.data)
-  //       })
-  //       .catch((err: any) => {
-  //         let msg = err?.response?.data?.data || err?.response?.data || 'Error!'
-  //         message.error(msg)
-  //         console.log(err)
-  //       })
-  //       .finally(() => {
-  //         SetSSoEnableLoading({bool: false, email: ''})
-  //         dispatch(getTeamMembers({isDeleted: false, offset: currentOffset}))
-  //       })
-  //   }
-  // }
+  const HandleSSOEnable = (value: boolean, email: string, fullName: string) => {
+    if (user?.role === 'admin' && billingInfo?.plan === 'PROFESSIONAL') {
+      SetSSoEnableLoading({bool: true, email: email})
+      let data = {
+        azureSSOEnables: !value,
+        email: email,
+        fullName: fullName,
+      }
+      axiosInstance
+        .post('/users/azure-user-create', data)
+        .then((res: any) => {
+          let msg = res?.data?.data || res?.data || 'Successfully!'
+          if (res?.data !== 'Status change') message.success(msg)
+          console.log(res?.data)
+        })
+        .catch((err: any) => {
+          let msg = err?.response?.data?.data || err?.response?.data || 'Error!'
+          message.error(msg)
+          console.log(err)
+        })
+        .finally(() => {
+          SetSSoEnableLoading({bool: false, email: ''})
+          dispatch(getTeamMembers({isDeleted: false, offset: currentOffset}))
+        })
+    }
+  }
 
   return (
     <>
@@ -91,6 +92,7 @@ const TeamTable: React.FC<TableProps> = ({currentOffset, setCurrentOffset, actio
             <td className='t-px-4 t-py-7 t-text-center  '>Permission</td>
             <td className='t-px-4 t-py-7 t-text-center  '>Status</td>
             {/* <td className='t-px-4 t-py-7 t-text-center  '>SSO</td> */}
+            <td className='t-px-4 t-py-7 t-text-center t-rounded-tr-lg '>SSO</td>
             <td className='t-px-4 t-py-7 t-text-center t-rounded-tr-lg '>Joining Date</td>
             <td className='t-px-4 t-py-7 t-text-center t-rounded-tr-lg '>Action</td>
           </tr>
@@ -125,7 +127,7 @@ const TeamTable: React.FC<TableProps> = ({currentOffset, setCurrentOffset, actio
                     style={{backgroundColor: row?.isBlocked ? '#FF6461 ' : '#55B659'}}
                   />
                 </td>
-                {/* <td className='t-border-b t-px-4 t-py-7 t-text-center '>
+                 <td className='t-border-b t-px-4 t-py-7 t-text-center '>
                   <Tooltip
                     title={
                       user?.role === 'admin' && billingInfo?.plan === 'PROFESSIONAL'
@@ -136,7 +138,7 @@ const TeamTable: React.FC<TableProps> = ({currentOffset, setCurrentOffset, actio
                     <Switch
                       disabled={user?.role !== 'admin' && billingInfo?.plan !== 'PROFESSIONAL'}
                       checked={row?.azureSSOEnables}
-                      loading={SSoEnableLoading?.email === row?.email && SSoEnableLoading?.bool}
+                      // loading={SSoEnableLoading?.email === row?.email && SSoEnableLoading?.bool}
                       onChange={() => {
                         HandleSSOEnable(
                           row?.azureSSOEnables,
@@ -149,7 +151,8 @@ const TeamTable: React.FC<TableProps> = ({currentOffset, setCurrentOffset, actio
                       style={{backgroundColor: !row?.azureSSOEnables ? '#FF6461 ' : '#55B659'}}
                     />
                   </Tooltip>
-                </td> */}
+                </td> 
+
                 <td className='t-border-b t-px-4 t-py-7 t-text-center '>
                   {row?.joiningDate
                     ? format(parseISO(row?.joiningDate), 'dd MMM yyyy')
