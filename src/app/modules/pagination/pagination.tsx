@@ -36,6 +36,7 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
     <div style={{width: '100%', display: 'flex', marginTop: '20px', justifyContent: 'flex-end'}}>
       <div>
         {totalItems > 0 && (
+      
           <Pagination
             current={currentPage || currPage}
             total={totalItems}

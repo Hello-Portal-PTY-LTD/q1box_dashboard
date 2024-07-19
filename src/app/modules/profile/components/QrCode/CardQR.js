@@ -336,7 +336,7 @@ const CardQR = ({content, isChecked, handleCheck}) => {
                           navigator.clipboard
                             .writeText(`${process.env.REACT_APP_KEY}/${content.shortId}`)
                             .then(() => {
-                              message.success(`URL Coppied`)
+                              message.success(`URL Copied`)
                             })
                             .catch((err) => {
                               message.error(`Error not coppied`)

@@ -123,7 +123,7 @@ const convertToDataURL = async (node, quality, format) => {
 }
 
 const downloadDataUrl = (dataUrl, filename) => {
-  console.log('filename', filename)
+  filename = 'QR'
   const link = document.createElement('a')
   const name = `${filename}_${new Date().getTime()}`
   link.download = name

@@ -262,7 +262,7 @@ const PricingCard: React.FC<Props> = ({
           ''
         ) : (
           <div>
-            <p className='t-text-lg lg:t-text-2xl'>White Labeling Domain</p>
+            <p className='t-text-lg lg:t-text-2xl t-pt-10'>White Labeling Domain</p>
             <p className='t-text-[#52565B] sm-text-xs md:t-text-md xl:t-text-lg t-font-normal'>
               Unlock new business horizons with our white labeling services. Seamlessly integrate
               our cutting-edge products expand your offerings swiftly and efficiently.

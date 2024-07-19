@@ -10,7 +10,7 @@ import {AppDispatch, RootState} from 'store'
 import Input from '../../../../../_metronic/partials/qrComponents/Input'
 import * as authHelper from '../../../auth/core/AuthHelpers'
 import {useOnClickOutside} from '../../../../../hooks/useOnClickOutside'
-import {Empty, Spin, message} from 'antd'
+import {Empty, Select, Spin, message} from 'antd'
 import './style.css'
 import PaginationComponent from 'app/modules/pagination/pagination'
 import {Modal, Button as BootstrapButton} from 'react-bootstrap'
@@ -21,8 +21,13 @@ import {Link} from 'react-router-dom'
 const {axiosInstance} = require('../../../../../axios/index')
 
 export function QrCodes() {
+  const [edit, setEdit] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
-  useOnClickOutside(modalRef, () => setNewFolder(false))
+  const optionsRef :any= useRef()
+  useOnClickOutside(modalRef, () => {setNewFolder(false) })
+  useOnClickOutside(optionsRef, () => {setEdit(false) })
+
+
   const [newFolder, setNewFolder] = useState(false)
   const dispatch = useDispatch<AppDispatch>()
   const {foldersInfo, foldersLoading, loading} = useSelector((state: RootState) => state.qr)
@@ -90,7 +95,11 @@ export function QrCodes() {
     return folderName.length > 0 && regex.test(folderName)
   }
 
-  const createFolderSubmit = () => {
+  const createFolderSubmit = (id=null) => {
+    if(id){
+      alert(id)
+    }
+    return
     if (isValidFolderName(folderName)) {
       let name = folderName?.trim()
       dispatch(createFolder(name))
@@ -108,9 +117,9 @@ export function QrCodes() {
     }
   }
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (isValidFolderName(e.target.value)) {
-      setFolderName(e.target.value)
+  const onChange = (value:string) => {
+    if (isValidFolderName(value)) {
+      setFolderName(value)
       setErr('')
     } else {
       setErr('Folder name Required')
@@ -136,11 +145,9 @@ export function QrCodes() {
   const [disabled, setDisabled] = useState(false)
 
   const handleCountrySelect = (country: any) => {
-    console.log(country)
     setSelectedCountry(country)
   }
   const handleCitySelect = (city: any) => {
-    console.log(city)
     setSelectedCity(city)
   }
   const handleIndustryInput = (value: any) => {
@@ -216,7 +223,15 @@ export function QrCodes() {
     setSelectedCity('')
     if (selectedCountry?.name) {
       const allCities = City.getCitiesOfCountry(selectedCountry.code)
-      setCities(allCities)
+    const formatedCities=  allCities?.map((city)=> {
+        return{
+        value:city.name,
+        label:city.name
+      }
+    }
+    )
+
+      setCities(formatedCities)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCountry?.name])
@@ -237,6 +252,7 @@ export function QrCodes() {
     setIsWelcomeModal(false)
   }
 
+ 
   return (
     <div className='t-flex t-flex-col t-gap-8 '>
       <div>
@@ -277,8 +293,16 @@ export function QrCodes() {
                       // Add a condition to check if the 'name' property exists in the item
                       item?.name &&
                       item?.id && (
-                        <div key={index} className='t-w-full'>
-                          <Card content={item} />
+                        <div key={index} className='t-w-full' >
+                          <Card content={item} 
+                          folderName={folderName}
+                           setFolderName={setFolderName}
+                           edit={edit}
+                           setEdit={setEdit}
+                           setNewFolder={setNewFolder}
+                           onChange={onChange}
+                           optionsRef={optionsRef}
+                          />
                         </div>
                       )
                   )}
@@ -314,7 +338,7 @@ export function QrCodes() {
           >
             <h3 className='t-text-[24px] t-font-bold t-text-black'>New Folder</h3>
             <div className='t-h-[60px] t-gap-3  t-w-full'>
-              <Input placeholder='Enter Folder Name' onChange={onChange} />
+              <input type='text' className='t-flex t-w-full t-border-2 t-rounded-md t-h-16 t-border-primaryblue t-px-3 t-text-2xl' placeholder='Enter Folder Name' value={folderName} onChange={(e:any)=>onChange(e.target.value)}   />
               <p className='t-text-primaryblue t-mt-3'>{err}</p>
             </div>
             <div className='t-flex t-items-center t-gap-12 t-w-full t-text-[16px]'>
@@ -471,7 +495,7 @@ export function QrCodes() {
                   </div>
                   <div>
                     <p className='t-font-medium t-mb-1'>Choose Your City</p>
-
+        
                     <select
                       disabled={!selectedCountry}
                       onChange={(event) => {
@@ -485,6 +509,7 @@ export function QrCodes() {
                       style={{border: '1px solid rgb(59 130 246)', borderRadius: '8px'}}
                       className='t-p-4 t-w-full t-bg-white'
                     >
+       
                       <option value={''}>Select City</option>
                       {cities.map((city: any, index: number) => (
                         <option key={index} value={JSON.stringify(city)}>
@@ -492,6 +517,8 @@ export function QrCodes() {
                         </option>
                       ))}
                     </select>
+
+          
 
                     {/* <BootstrapDropdown style={{width: '100%'}}>
                       <BootstrapDropdown.Toggle

@@ -15,6 +15,7 @@ import {useEffect, useState} from 'react'
 import {getTransactions} from 'store/payment/paymentAction'
 import {Button} from '_metronic/partials/qrComponents'
 import {useNavigate} from 'react-router-dom'
+import { el } from 'date-fns/locale'
 
 export function Analytics() {
   const dispatch = useDispatch()
@@ -23,6 +24,7 @@ export function Analytics() {
   const [timeRange, setTimeRange] = useState<string>('')
   const timePeriod = useSelector((state: RootState) => state.config.analytics.timePeriod)
   const {loading, billingInfo} = useSelector((state: RootState) => state.payment)
+  const {plan} = useSelector((state: RootState) => state.payment.billingInfo)
   const [blur, setBlur] = useState(false)
 
   const navigate = useNavigate()
@@ -64,7 +66,10 @@ export function Analytics() {
         billingInfo?.plan === undefined ||
         billingInfo?.plan === null)
     ) {
+      
       setBlur(true)
+    }else{
+      setBlur(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [billingInfo.plan])
