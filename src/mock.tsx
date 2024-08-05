@@ -737,6 +737,7 @@ const INDUSTRIES_LIST = [
 
 const SUPER_ROLES = ['superAdmin', 'actingSuperAdmin', 'superEditor', 'superViewer']
 const PLAIN_ADMIN_ROLES = ['admin', 'actingAdmin', 'editor', 'viewer']
+const SHOW_ALL_FOLDERS = "Show All"
 
 export {
   MENU_ITEMS,
@@ -771,4 +772,5 @@ export {
   IS_SUPER_OR_SUPER_ACTING_ADMIN,
   PLAIN_ADMIN_ROLES,
   QR_HAVE_PREVIEW,
+  SHOW_ALL_FOLDERS
 }

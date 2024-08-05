@@ -8,6 +8,7 @@ import {
   createLabel,
   getUserQrLabels,
   duplicateQr,
+  updateFolderName,
 } from './qrAction'
 
 interface QRState {
@@ -157,6 +158,16 @@ const qrSlice = createSlice({
         // state.qrCodes = action.payload
       })
       .addCase(updateQrCode.rejected, (state) => {
+        state.loading = false
+      })
+
+      .addCase(updateFolderName.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(updateFolderName.fulfilled, (state, action) => {
+        state.loading = false
+      })
+      .addCase(updateFolderName.rejected, (state) => {
         state.loading = false
       })
       .addCase(searchQrCodes.pending, (state) => {

@@ -2,15 +2,15 @@
 import {QR_CARD_DATE} from '../../../../../mock'
 import Card from '../../../../../_metronic/partials/content/cards/Card'
 import Button from '../../../../../_metronic/partials/qrComponents/Button'
-import CardSelection from './CardSelection'
+import CardSelection, { ConfirmPopUp } from './CardSelection'
 import {useEffect, useRef, useState} from 'react'
-import {createFolder, createLabel, getUserQrFolders, getUserQrLabels} from 'store/qrStore/qrAction'
+import {createFolder, createLabel, deleteFolder, getUserQrFolders, getUserQrLabels, updateFolderName} from 'store/qrStore/qrAction'
 import {useDispatch, useSelector} from 'react-redux'
 import {AppDispatch, RootState} from 'store'
 import Input from '../../../../../_metronic/partials/qrComponents/Input'
 import * as authHelper from '../../../auth/core/AuthHelpers'
 import {useOnClickOutside} from '../../../../../hooks/useOnClickOutside'
-import {Empty, Spin, message} from 'antd'
+import {Empty, Select, Spin, message} from 'antd'
 import './style.css'
 import PaginationComponent from 'app/modules/pagination/pagination'
 import {Modal, Button as BootstrapButton} from 'react-bootstrap'
@@ -21,9 +21,14 @@ import {Link} from 'react-router-dom'
 const {axiosInstance} = require('../../../../../axios/index')
 
 export function QrCodes() {
+  const [edit, setEdit] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
-  useOnClickOutside(modalRef, () => setNewFolder(false))
+  useOnClickOutside(modalRef, () => {setNewFolder(false); setEditFolder(false); })
+  const [cardToEdit, setcardToEdit] = useState('')
+  const [DeleteItem, setDeleteItem] = useState(false)
+  const [editFolder, setEditFolder] = useState(false)
   const [newFolder, setNewFolder] = useState(false)
+  const { Option } = Select;
   const dispatch = useDispatch<AppDispatch>()
   const {foldersInfo, foldersLoading, loading} = useSelector((state: RootState) => state.qr)
   const {
@@ -34,6 +39,8 @@ export function QrCodes() {
   } = useSelector((state: RootState) => state.auth.user)
   const user = useSelector((state: RootState) => state.auth.user)
   const [folderName, setFolderName] = useState('')
+  const [FolderID, setFolderID] = useState('')
+  const [FolderDataToDelete, setFolderDataToDelete] = useState({FolderName: '', FolderID: ''})
   const [infoModal, setInfoModal] = useState(false)
   const [isWelcomeModal, setIsWelcomeModal] = useState(true)
   const roles = ['viewer', 'whiteLabel']
@@ -90,7 +97,8 @@ export function QrCodes() {
     return folderName.length > 0 && regex.test(folderName)
   }
 
-  const createFolderSubmit = () => {
+  const createFolderSubmit = (id=null) => {
+   
     if (isValidFolderName(folderName)) {
       let name = folderName?.trim()
       dispatch(createFolder(name))
@@ -108,17 +116,66 @@ export function QrCodes() {
     }
   }
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (isValidFolderName(e.target.value)) {
-      setFolderName(e.target.value)
+  const updateFolderSubmit = (id=null) => {
+    if (isValidFolderName(folderName)) {
+      let name = folderName?.trim()
+      dispatch(updateFolderName({ folderId: FolderID, newFolderName: name })) 
+        .unwrap()
+        .then(() => {
+          dispatch(getUserQrFolders({userId, offset: 0, limit: 4}))
+          setEditFolder(false)
+          setFolderName('')
+        })
+        .catch(() => {
+          setNewFolder(false)
+        })
+    } else {
+      setErr('Folder name Required')
+    }
+  }
+
+  const onChange = (value:string) => {
+    if (isValidFolderName(value)) {
+      setFolderName(value)
       setErr('')
     } else {
       setErr('Folder name Required')
     }
   }
 
+  const onEditChange = (value:string, id: string) => {
+    if (isValidFolderName(value)) {
+      setFolderName(value)
+      setFolderID(id)
+      setEdit(false)
+      setErr('')
+    } else {
+      setErr('Folder name Required')
+    }
+  }
+
+  const handleDeleteFolder = () => {
+    dispatch(deleteFolder({ folderId: FolderDataToDelete.FolderID })) 
+    .unwrap()
+    .then(() => {
+      dispatch(getUserQrFolders({userId, offset: 0, limit: 4}))
+      setEditFolder(false)
+      setFolderName('')
+      setDeleteItem(false)
+    })
+    .catch(() => {
+      setNewFolder(false)
+    })
+  }
+
   const handleCancel = () => {
     setNewFolder(false)
+    setEditFolder(false)
+  }
+
+  const handleDeleteFolderConfirm=(data: any)=>{
+    setFolderDataToDelete(data)
+    setDeleteItem(true)
   }
 
   const handleFolderPageChange = (offset: number) => {
@@ -136,16 +193,36 @@ export function QrCodes() {
   const [disabled, setDisabled] = useState(false)
 
   const handleCountrySelect = (country: any) => {
-    console.log(country)
     setSelectedCountry(country)
   }
   const handleCitySelect = (city: any) => {
-    console.log(city)
     setSelectedCity(city)
   }
   const handleIndustryInput = (value: any) => {
     setIndustry(value)
   }
+
+  const handleChange = (value: any) => {
+    if (value) {
+      let country = JSON.parse(value);
+      handleCountrySelect({ name: country.name, code: country.isoCode });
+    } else {
+      handleCountrySelect(null);
+    }
+  };
+  const handleChangeCity = (value: any) => {
+    if (value) {
+      let city: any = JSON.parse(value)
+      handleCitySelect(city.name)
+    } else {
+      handleCitySelect(null)
+    }
+  };
+  const handleChangeIndustry = (value: any) => {
+    if (value) {
+      setIndustry(value)
+    } 
+  };
 
   const handleSubmit = () => {
     if (selectedCountry?.name === '' || industry === '') {
@@ -211,12 +288,20 @@ export function QrCodes() {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [Cont, Indu, Cit, user, isWelcomeModal])
 
-  useEffect(() => {
+  useEffect(() => { 
     setCities([])
     setSelectedCity('')
     if (selectedCountry?.name) {
       const allCities = City.getCitiesOfCountry(selectedCountry.code)
-      setCities(allCities)
+    const formatedCities=  allCities?.map((city)=> {
+        return{
+        value:city.name,
+        label:city.name
+      }
+    }
+    )
+
+      setCities(formatedCities)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCountry?.name])
@@ -237,6 +322,7 @@ export function QrCodes() {
     setIsWelcomeModal(false)
   }
 
+ 
   return (
     <div className='t-flex t-flex-col t-gap-8 '>
       <div>
@@ -277,8 +363,18 @@ export function QrCodes() {
                       // Add a condition to check if the 'name' property exists in the item
                       item?.name &&
                       item?.id && (
-                        <div key={index} className='t-w-full'>
-                          <Card content={item} />
+                        <div key={index} className='t-w-full' >
+                          <Card content={item} 
+                           folderName={folderName}
+                           setFolderName={setFolderName}
+                           edit={edit}
+                           cardToEdit={cardToEdit}
+                           setcardToEdit={setcardToEdit}
+                           setEdit={setEdit}
+                           setEditFolder={setEditFolder}
+                           onEditChange={onEditChange}
+                           handleDeleteFolderConfirm={handleDeleteFolderConfirm}
+                          />
                         </div>
                       )
                   )}
@@ -314,7 +410,7 @@ export function QrCodes() {
           >
             <h3 className='t-text-[24px] t-font-bold t-text-black'>New Folder</h3>
             <div className='t-h-[60px] t-gap-3  t-w-full'>
-              <Input placeholder='Enter Folder Name' onChange={onChange} />
+              <input type='text' className='t-flex t-w-full t-border-2 t-rounded-md t-h-16 t-border-primaryblue t-px-3 t-text-2xl' placeholder='Enter Folder Name' value={folderName} onChange={(e:any)=>onChange(e.target.value)}   />
               <p className='t-text-primaryblue t-mt-3'>{err}</p>
             </div>
             <div className='t-flex t-items-center t-gap-12 t-w-full t-text-[16px]'>
@@ -322,6 +418,45 @@ export function QrCodes() {
                 Name='Create'
                 loading={loading}
                 click={createFolderSubmit}
+                primary
+                className='t-w-full'
+              />
+              <Button Name='Cancel' click={handleCancel} className='t-w-full' />
+            </div>
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
+
+      {DeleteItem && (
+        <ConfirmPopUp
+          message={`Are you sure you want to delete this Folder? "${FolderDataToDelete.FolderName}"`}
+          handleClick={handleDeleteFolder}
+          setState={() => setDeleteItem(false)}
+          btnText='Delete'
+        />
+      )}
+
+      {editFolder ? (
+        <div className='t-fixed t-top-0 t-left-0 t-w-[100vw] t-h-[100vh] t-z-[999999] t-bg-[rgba(0,0,0,0.6)] t-flex t-items-center t-justify-center t-px-3'>
+          <div
+            ref={modalRef}
+            className='t-bg-white t-px-16 t-py-20 t-w-[587px] t-flex t-flex-col t-items-center t-justify-center t-gap-10 t-rounded-2xl'
+          >
+            <h3 className='t-text-[24px] t-font-bold t-text-black'>Edit Folder</h3>
+            <div className='t-h-[60px] t-gap-3  t-w-full'>
+              <input type='text' className='t-flex t-w-full t-border-2 t-rounded-md t-h-16 t-border-primaryblue t-px-3 t-text-2xl' 
+              placeholder='Enter Folder Name' 
+              value={folderName} 
+              onChange={(e: any) => onChange(e.target.value)} />
+              <p className='t-text-primaryblue t-mt-3'>{err}</p>
+            </div>
+            <div className='t-flex t-items-center t-gap-12 t-w-full t-text-[16px]'>
+              <Button
+                Name='Save'
+                loading={loading}
+                click={updateFolderSubmit}
                 primary
                 className='t-w-full'
               />
@@ -432,7 +567,7 @@ export function QrCodes() {
                   <div>
                     <p className='t-font-medium t-mb-1'>Choose your Country</p>
 
-                    <select
+                    {/* <select
                       onChange={(event) => {
                         if (event.target.value) {
                           let country: any = JSON.parse(event.target.value)
@@ -450,7 +585,25 @@ export function QrCodes() {
                           {country.name}
                         </option>
                       ))}
-                    </select>
+                    </select> */}
+
+                    <Select
+                      allowClear
+                      showSearch
+                      placeholder="Select a country"
+                      optionFilterProp="children" 
+                      onChange={handleChange}
+                      style={{ width: '100%', border: '1px solid rgb(59 130 246)', borderRadius: '8px' }}
+                     
+                    >
+                      <option value={''}>Select Country</option>
+                      {countries.map((country: any, index :number) => (
+                        <Option key={index} value={JSON.stringify(country)}>
+                          {country.name}
+                        </Option>
+                      ))}
+                    </Select>
+
                     {/* <BootstrapDropdown style={{width: '100%'}}>
                       <BootstrapDropdown.Toggle variant='primary' id='country-dropdown'>
                         {selectedCountry ? selectedCountry.name : 'Select a country'}
@@ -471,27 +624,26 @@ export function QrCodes() {
                   </div>
                   <div>
                     <p className='t-font-medium t-mb-1'>Choose Your City</p>
-
-                    <select
+        
+                    <Select
                       disabled={!selectedCountry}
-                      onChange={(event) => {
-                        if (event.target.value) {
-                          let city: any = JSON.parse(event.target.value)
-                          handleCitySelect(city.name)
-                        } else {
-                          handleCitySelect(null)
-                        }
-                      }}
-                      style={{border: '1px solid rgb(59 130 246)', borderRadius: '8px'}}
-                      className='t-p-4 t-w-full t-bg-white'
+                      allowClear
+                      showSearch
+                      placeholder="Select a City"
+                      optionFilterProp="children" 
+                      onChange={handleChangeCity}
+                      style={{ width: '100%', border: '1px solid rgb(59 130 246)', borderRadius: '8px' }}
                     >
-                      <option value={''}>Select City</option>
+       
+                      <Option value={''}>Select City</Option>
                       {cities.map((city: any, index: number) => (
-                        <option key={index} value={JSON.stringify(city)}>
-                          {city.name}
-                        </option>
+                        <Option key={index} value={JSON.stringify(city)}>
+                          {city.value}
+                        </Option>
                       ))}
-                    </select>
+                    </Select>
+
+          
 
                     {/* <BootstrapDropdown style={{width: '100%'}}>
                       <BootstrapDropdown.Toggle
@@ -516,20 +668,21 @@ export function QrCodes() {
                   <div>
                     <p className='t-font-medium t-mb-1'>Choose Your Industry</p>
 
-                    <select
-                      onChange={(event) => {
-                        handleIndustryInput(event.target.value)
-                      }}
-                      style={{border: '1px solid rgb(59 130 246)', borderRadius: '8px'}}
-                      className='t-p-4 t-w-full t-bg-white'
+                    <Select
+                      onChange={handleChangeIndustry}
+                      allowClear
+                      showSearch
+                      placeholder="Select an Industry"
+                      optionFilterProp="children" 
+                      style={{ width: '100%', border: '1px solid rgb(59 130 246)', borderRadius: '8px' }}
                     >
-                      <option value={''}>Select Industry</option>
+                      <Option selected value={''}>Select Industry</Option>
                       {INDUSTRIES_LIST.map((industry: any, index: number) => (
                         <option key={index} value={industry}>
                           {industry}
                         </option>
                       ))}
-                    </select>
+                    </Select>
                     {/* <BootstrapDropdown style={{width: '100%'}}>
                       <BootstrapDropdown.Toggle
                         variant='primary'
