@@ -96,6 +96,15 @@ body {
   border: 1px solid #3a57ec;
 } */
 
+.ant-select-dropdown {
+  z-index: 9999 !important;
+}
+
+.ant-select-selector{
+  border: none !important;
+  background-color: transparent !important;
+}
+
 .gradient-border-3 {
   background: linear-gradient(#fff, #fff) padding-box,
     linear-gradient(180deg, #3a57ec 0%, #7f6aff 100%) border-box;

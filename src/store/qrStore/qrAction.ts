@@ -83,6 +83,53 @@ export const createFolder = createAsyncThunk(
     }
   }
 )
+
+export const updateFolderName = createAsyncThunk(
+  'update-qr-folder-name',
+  async ({ folderId, newFolderName }: { folderId: string, newFolderName: string }, { rejectWithValue } :any) => {
+    try {
+      const user = JSON.parse(localStorage.getItem('userInfo') || '{}');
+      const userId = user.userId;
+      const data = {
+        owner: userId,
+        name: newFolderName,
+      };
+      const res = await axiosInstance.put(`/folder/${folderId}`, data);
+      return {
+        id: res.id,
+        name: res.name,
+        createdAt: res.createdAt,
+        qrs: 0,
+      };
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || 'Failed to update folder name');
+    }
+  }
+);
+
+export const deleteFolder = createAsyncThunk(
+  'delete-qr-folder',
+  async ({ folderId }: { folderId: string }, { rejectWithValue } :any) => {
+    try {
+      const user = JSON.parse(localStorage.getItem('userInfo') || '{}');
+      const userId = user.userId;
+      const data = {
+        owner: userId,
+        name: folderId,
+      };
+      const res = await axiosInstance.delete(`/folder/${folderId}`, data);
+      return {
+        id: res.id,
+        name: res.name,
+        createdAt: res.createdAt,
+        qrs: 0,
+      };
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || 'Failed to update folder name');
+    }
+  }
+);
+
 export const createLabel = createAsyncThunk(
   'create-qr-labels',
   async (name: string, {rejectWithValue}: any) => {

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {QR_SORT, QR_STATUS, QR_TYPE} from '../../../../../mock'
+import {QR_SORT, QR_STATUS, QR_TYPE, SHOW_ALL_FOLDERS} from '../../../../../mock'
 import './../../../../../_metronic/partials/qrComponents/Style/style.css'
 import {DropdownCheckbox, Search} from '../../../../../_metronic/partials/qrComponents'
 import CardQR from './CardQR'
@@ -64,6 +64,7 @@ const CardSelection: React.FC<Props> = ({cardData, setLableModal}) => {
           value: id,
         }
       })
+      formedData.unshift({label:SHOW_ALL_FOLDERS, value: SHOW_ALL_FOLDERS})
       setFormedFolders(formedData)
     }
     if (qrLabels.length > 0) {
@@ -168,14 +169,15 @@ const CardSelection: React.FC<Props> = ({cardData, setLableModal}) => {
   }
 
   const handleFolderChange = (value: string) => {
+    let Foldervalue = value === SHOW_ALL_FOLDERS ? '' : value
     setSearchOptions((prev: any) => ({
       ...prev,
-      qrFolder: value,
+      qrFolder: Foldervalue,
     }))
     dispatch(
       searchQrCodes({
         ...searchOptions,
-        qrFolder: value,
+        qrFolder: Foldervalue,
       })
     )
   }
@@ -347,7 +349,7 @@ interface ConfirmPopUpProps {
   btnText: string
 }
 
-const ConfirmPopUp: React.FC<ConfirmPopUpProps> = ({setState, handleClick, message, btnText}) => {
+export const ConfirmPopUp: React.FC<ConfirmPopUpProps> = ({setState, handleClick, message, btnText}) => {
   const popUpRef = useRef<HTMLDivElement>(null)
 
   useOnClickOutside(popUpRef, () => setState(false))
