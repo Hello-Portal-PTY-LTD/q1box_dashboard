@@ -94,7 +94,7 @@ function DownloadOptions({disableDownloadText}) {
           className='t-w-full  t-font-medium '
           loading={loading}
           onClick={() => {
-            downloadQRCode('HIGH', option, 'logo', 'qr_parent')
+            downloadQRCode('HIGH', option, 'QR', 'qr_parent')
           }}
         />
       ) : (

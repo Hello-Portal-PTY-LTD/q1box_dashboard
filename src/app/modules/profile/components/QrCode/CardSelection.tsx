@@ -49,6 +49,7 @@ const CardSelection: React.FC<Props> = ({cardData, setLableModal}) => {
   const [formedFolders, setFormedFolders] = useState<{label: string; value: string}[]>([])
   const [formedLabels, setFormedLabels] = useState<{label: string; value: string}[]>([])
   const [deleteAll, setDeleteAll] = useState(false)
+  const [filterClear, setFilterClear] = useState(false)
 
   useEffect(() => {
     //-- get all qrs
@@ -64,7 +65,7 @@ const CardSelection: React.FC<Props> = ({cardData, setLableModal}) => {
           value: id,
         }
       })
-      formedData.unshift({label:SHOW_ALL_FOLDERS, value: SHOW_ALL_FOLDERS})
+      formedData.unshift({label: SHOW_ALL_FOLDERS, value: SHOW_ALL_FOLDERS})
       setFormedFolders(formedData)
     }
     if (qrLabels.length > 0) {
@@ -213,7 +214,6 @@ const CardSelection: React.FC<Props> = ({cardData, setLableModal}) => {
     }
     dispatch(setQrOffset(offset))
   }
-
   const checkAll = () => {
     if (qrsInfo.qrs?.length) {
       let qrArr: any[] = [...qrsInfo.qrs]
@@ -263,13 +263,14 @@ const CardSelection: React.FC<Props> = ({cardData, setLableModal}) => {
         {' '}
         <div className='t-grid t-grid-cols-1 500:t-grid-cols-2 lg:t-grid-cols-3 xl:t-grid-cols-4 t-gap-8  t-w-full'>
           <div className=''>
-            <Search onChange={handleSearchChange} />
+            <Search onChange={handleSearchChange} filterClear={filterClear} />
           </div>
           <div className=''>
             <DropdownCheckbox
               onClick={handleFolderChange}
               title='QR Folder'
               listItems={formedFolders}
+              filterClear={filterClear}
             />
           </div>
           <div className=''>
@@ -277,6 +278,7 @@ const CardSelection: React.FC<Props> = ({cardData, setLableModal}) => {
               onClick={handleStatusChange}
               title='QR Status'
               listItems={QR_STATUS}
+              filterClear={filterClear}
             />
           </div>
           <div className=''>
@@ -284,33 +286,60 @@ const CardSelection: React.FC<Props> = ({cardData, setLableModal}) => {
               onClick={handleQrTypeChange}
               title='QR Code Type'
               listItems={QR_TYPE}
+              filterClear={filterClear}
             />
           </div>
           <div className=''>
-            <DropdownCheckbox onClick={handleLabelChange} title='Label' listItems={formedLabels} />
+            <DropdownCheckbox
+              onClick={handleLabelChange}
+              title='Label'
+              listItems={formedLabels}
+              filterClear={filterClear}
+            />
           </div>
           <div className=''>
-            <DropdownCheckbox onClick={handleSortChange} title='Sort By' listItems={QR_SORT} />
+            <DropdownCheckbox
+              onClick={handleSortChange}
+              title='Sort By'
+              listItems={QR_SORT}
+              filterClear={filterClear}
+            />
           </div>
           <div />
-          <div className='t-flex t-justify-between t-mx-4'>
-            <div className='t-flex t-gap-2 t-items-center'>
-              <input
-                type='checkbox'
-                checked={qrsInfo.qrs?.length === isChecked.length}
-                onChange={checkAll}
-              />
-              <p>Select All</p>
+        </div>
+        <div className='t-flex t-mx-4 t-gap-8 t-items-end t-justify-end t-flex-col sm:t-flex-row sm:t-items-center sm:t-gap-4'>
+          <div
+            onClick={() => {
+              setFilterClear(!filterClear)
+              setSearchOptions({
+                qrStatus: '',
+                qrType: '',
+                qrName: '',
+                sortBy: '',
+                offset: '',
+              })
+              dispatch(getAllQrCodes({type: 'all', offset: offset}))
+            }}
+            className='t-flex t-gap-2 t-items-center t-cursor-pointer'
+          >
+            <p>Clear Filters</p>
+          </div>
+          <div className='t-flex t-gap-2 t-items-center'>
+            <input
+              type='checkbox'
+              checked={qrsInfo.qrs?.length === isChecked.length && isChecked.length > 0}
+              onChange={checkAll}
+            />
+            <p>Select All</p>
+          </div>
+          <div
+            onClick={() => setDeleteAll(true)}
+            className='t-flex t-gap-2 t-items-center t-cursor-pointer'
+          >
+            <div>
+              <img className='t-w-8' src='/media/svg/qr_dashboard/delete.svg' alt='deleteicon' />
             </div>
-            <div
-              onClick={() => setDeleteAll(true)}
-              className='t-flex t-gap-2 t-items-center t-cursor-pointer'
-            >
-              <div>
-                <img className='t-w-8' src='/media/svg/qr_dashboard/delete.svg' alt='deleteicon' />
-              </div>
-              <p>Delete Selected</p>
-            </div>
+            <p>Delete Selected</p>
           </div>
         </div>
         <div className='t-flex t-flex-col gap-3 t-text-t1 '>
@@ -349,7 +378,12 @@ interface ConfirmPopUpProps {
   btnText: string
 }
 
-export const ConfirmPopUp: React.FC<ConfirmPopUpProps> = ({setState, handleClick, message, btnText}) => {
+export const ConfirmPopUp: React.FC<ConfirmPopUpProps> = ({
+  setState,
+  handleClick,
+  message,
+  btnText,
+}) => {
   const popUpRef = useRef<HTMLDivElement>(null)
 
   useOnClickOutside(popUpRef, () => setState(false))

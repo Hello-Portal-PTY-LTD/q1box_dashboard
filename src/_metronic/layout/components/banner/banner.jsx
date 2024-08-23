@@ -8,7 +8,6 @@ const Banner = () => {
   const getbanner = async () => {
     try {
       let res = await axiosInstance.get('/banner/getbanner')
-      console.log(res)
       setBannerData(res?.data)
     } catch (error) {
       console.error(error)

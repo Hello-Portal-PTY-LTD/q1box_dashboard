@@ -4,7 +4,7 @@ import {confirmOtp, updateAuthUser} from 'store/authStore/authAction'
 import * as Yup from 'yup'
 import {useFormik} from 'formik'
 import {useDispatch, useSelector} from 'react-redux'
-import {Spin, message,Tooltip,Switch} from 'antd'
+import {Spin, message, Tooltip, Switch} from 'antd'
 import camera from '../../../../../../../src/assets/media/camera.svg'
 import {
   Button as BootstrapButton,
@@ -165,7 +165,6 @@ const ProfileDetails = () => {
   //   return roles[role]
   // }
 
-  console.log({user})
   const HandleSSOEnable = (value) => {
     if (user?.role === 'admin' && billingInfo?.plan === 'PROFESSIONAL') {
       SetSSoEnableLoading(true)
@@ -188,7 +187,6 @@ const ProfileDetails = () => {
         })
         .finally(() => {
           SetSSoEnableLoading(false)
-         
         })
     }
   }
@@ -528,11 +526,10 @@ const ProfileDetails = () => {
                   </div>
                 </div>
               </div>
-            </div> 
-           
-    </div>
-    </form>
-    </div>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }

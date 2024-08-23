@@ -26,6 +26,7 @@ interface Props {
   primary?: boolean
   setSelectedItem?: any
   onClick?: any
+  filterClear?: any
 }
 const DropdownCheckbox: React.FC<Props> = ({
   title,
@@ -35,7 +36,7 @@ const DropdownCheckbox: React.FC<Props> = ({
   listItems,
   fontsize,
   onClick,
-
+  filterClear,
   primary = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -70,6 +71,10 @@ const DropdownCheckbox: React.FC<Props> = ({
       listItems.unshift({label: 'Create New Label', value: 'newlabel'})
     }
   }, [title, label, listItems])
+
+  useEffect(() => {
+    setSelected({label: '', value: ''})
+  }, [filterClear])
 
   const handleCreateLabel = () => {
     if (newLabel === '' || newLabel === null) {
