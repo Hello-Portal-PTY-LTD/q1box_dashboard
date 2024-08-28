@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {KTSVG} from '../../helpers'
 import './Style/style.css'
 interface ButtonProps {
@@ -7,9 +7,23 @@ interface ButtonProps {
   className?: string
   placeholder?: string
   onChange?: any
+  filterClear?: any
 }
 
-const Search: FC<ButtonProps> = ({Name, Icon, className, placeholder = 'Search', onChange}) => {
+const Search: FC<ButtonProps> = ({
+  Name,
+  Icon,
+  className,
+  placeholder = 'Search',
+  onChange,
+  filterClear,
+}) => {
+  const [searchTerm, setSearchTerm] = useState('')
+
+  useEffect(() => {
+    setSearchTerm('')
+  }, [filterClear])
+
   return (
     <form className='t-flex t-items-center t-w-full t-min-w-[150px]'>
       <label className='sr-only'>Search</label>
@@ -22,7 +36,11 @@ const Search: FC<ButtonProps> = ({Name, Icon, className, placeholder = 'Search',
           id='simple-search'
           className='t-bg-white placeholder-grey t-shadow-md t-border t-border-[#e5e7eb] t-text-gray-900 t-text-[16px] t-rounded-full t-h-[50px] focus:t-ring-blue-500 focus:t-border-blue-500 t-block t-w-full t-pl-12 t-py-3 t-px-8'
           placeholder={placeholder}
-          onChange={(e) => onChange && onChange(e.target.value)}
+          onChange={(e) => {
+            setSearchTerm(e.target.value)
+            onChange && onChange(e.target.value)
+          }}
+          value={searchTerm}
         />
       </div>
     </form>

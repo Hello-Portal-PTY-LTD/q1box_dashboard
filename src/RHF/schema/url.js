@@ -6,10 +6,10 @@ const urlValidation = yup
     url: yup
       .string()
       .matches(
-        /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-        'Enter correct url!'
+        /^(https?:\/\/)(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(:[0-9]{1,5})?(\/[a-zA-Z0-9#\/]*)?(\?[a-zA-Z0-9-_=&%]*)?$/,
+        'Enter a valid URL!'
       )
-      .required('Url is required!'),
+      .required('URL is required!'),
     updateAndTrack: yup.boolean(),
   })
   .required()

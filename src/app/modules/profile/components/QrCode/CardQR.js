@@ -237,7 +237,7 @@ const CardQR = ({content, isChecked, handleCheck}) => {
   // }
 
   const handleDownload = (format) => {
-    let name = content?.qrName || 'logo'
+    let name = content?.qrName || 'QR'
     downloadQRCode('HIGH', format, name, content?.shortId)
   }
 
@@ -336,10 +336,10 @@ const CardQR = ({content, isChecked, handleCheck}) => {
                           navigator.clipboard
                             .writeText(`${process.env.REACT_APP_KEY}/${content.shortId}`)
                             .then(() => {
-                              message.success(`URL Coppied`)
+                              message.success(`URL Copied`)
                             })
                             .catch((err) => {
-                              message.error(`Error not coppied`)
+                              message.error(`Error not Copied`)
                             })
                         }}
                       >

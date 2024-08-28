@@ -212,6 +212,7 @@ function Templates() {
             onMouseLeave={() => {
               setHoveredTemp('')
             }}
+            key={index}
           >
             <div
               className={`${

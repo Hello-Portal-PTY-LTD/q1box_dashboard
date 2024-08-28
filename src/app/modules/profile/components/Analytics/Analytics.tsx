@@ -190,13 +190,14 @@ export function Analytics() {
       </div>
       {!loading && blur && (
         <div
-        onClick={() => {
-          navigate('/dashboard/plans')
-        }}
-        className='t-absolute t-bottom-[5%] t-bg-primary t-cursor-pointer t- t-rounded-[50px] t-font-bold t-text-center t-p-2 t-text-white t-left-[7%] md:t-left-[7%]    t-w-[85%] md:t-w-[30%]'>
-          <p
-        
-          >Upgrade your plan to UNLOCK complete Analytics.</p>
+          onClick={() => {
+            navigate('/dashboard/plans')
+          }}
+          className='t-bg-primary t-cursor-pointer t-rounded-[50px] t-font-bold t-text-center t-p-2 t-text-white t-w-[85%] md:t-w-[30%] t-mx-auto'
+        >
+          <p className='t-text-[14px] 500:t-text-[18.7px] t-font-medium t-text-center'>
+            Upgrade your plan to UNLOCK complete Analytics.
+          </p>
         </div>
       )}
     </Spin>

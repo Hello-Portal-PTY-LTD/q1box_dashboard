@@ -49,7 +49,6 @@ const PricingCard: React.FC<Props> = ({
       setButtonText('Upgrade')
     }
 
-    console.log('called')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [billingInfo?.paymentStatus])
 

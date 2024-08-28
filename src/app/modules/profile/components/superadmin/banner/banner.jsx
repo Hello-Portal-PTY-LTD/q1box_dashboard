@@ -171,9 +171,7 @@ const BannerAdd = () => {
 
       setBannerLoading(true)
       let res = await axiosInstance.get('/banner/getbanner')
-
       console.log(res)
-
       setBannerData(res?.data)
       setBannerLoading(false)
       setBannerEdit(false)

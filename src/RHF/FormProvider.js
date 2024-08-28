@@ -412,7 +412,7 @@ function RHFProvider({children}) {
           }, 2000)
         } else {
           //  if shouldDownload is true then it will allow to download the code
-          let shouldDownload = edit_qrId ? '' : 'logo'
+          let shouldDownload = edit_qrId ? '' : 'QR'
           setTimeout(async () => {
             downloadQRCode(
               theData?.qrQuality,
@@ -426,7 +426,6 @@ function RHFProvider({children}) {
         }
       } catch (err) {
         setLoader(false)
-        console.log('THE ERROR', err)
       }
     }
 
@@ -551,7 +550,7 @@ function RHFProvider({children}) {
             }
             setTimeout(async () => {
               const qrImage = await downloadQRCode(res.qrQuality, res?.qrDownloadOption)
-              let newFile = await convertToFile(qrImage, 'qr', res?.qrDownloadOption)
+              let newFile = await convertToFile(qrImage, 'QR', res?.qrDownloadOption)
 
               if (newFile) {
                 dispatch(uploadFileGCP([newFile]))
@@ -559,7 +558,7 @@ function RHFProvider({children}) {
                   .then(async (response) => {
                     const qrImageUrl = response[0].url
                     const qrId = res.id
-                    await downloadQRCode(res.qrQuality, res.qrDownloadOption, 'logo').catch(() => {
+                    await downloadQRCode(res.qrQuality, res.qrDownloadOption, 'QR').catch(() => {
                       methods.reset(makeResetValues(res, res.qrType))
                     })
                     dispatch(

@@ -220,7 +220,6 @@ const barCodeSlice = createSlice({
       state.qrErrorLevel = action.payload
     },
     setTemplateLoading: (state, action) => {
-      console.log('action', action.payload)
       state.templateLoading = action.payload
     },
     setQrCodeState: (state, action) => {
@@ -272,7 +271,6 @@ const barCodeSlice = createSlice({
       })
       .addCase(deleteTemplate.fulfilled, (state, action) => {
         state.loading = false
-        console.log(action.payload)
         const currentTemplates = current(state.templates)
         const newTemplates = currentTemplates.filter((template) => template._id !== action.payload)
 
