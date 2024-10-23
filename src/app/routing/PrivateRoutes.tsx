@@ -64,7 +64,15 @@ const PrivateRoutes = () => {
           path='create-qr/'
           element={
             <RHFProvider>
-              <GeneratorBox />
+              <GeneratorBox mode='ALL' />
+            </RHFProvider>
+          }
+        />
+        <Route
+          path='create-qr-bulk/'
+          element={
+            <RHFProvider>
+              <GeneratorBox mode='BULK' />
             </RHFProvider>
           }
         />

@@ -202,7 +202,7 @@ const TAB_BAR = [
   {label: 'Make a Call', key: 'MakeCall', icon: <FaPhoneAlt />},
   {label: 'Send Email', key: 'SendEmail', icon: <RiMailLine />},
   {label: 'Upload Image', key: 'UploadImage', icon: <IoImageOutline />},
-  // {label: 'Bulk Upload', key: 'BulkUpload', icon: <MdOutlineCloudUpload />},
+  {label: 'Bulk Upload', key: 'BulkUpload', icon: <MdOutlineCloudUpload />},
 ]
 
 const TAB_BAR_1 = [

@@ -31,15 +31,15 @@ import QrFolderComponet from 'app/modules/GeneratoreBox/QrFolderComponent'
 import {useBlocker} from 'app/modules/GeneratoreBox/FormPrompt'
 import ImageLoader from 'app/modules/GeneratoreBox/imageLoader'
 
-const navigationBlocker = (tx) => {
-  if (true) {
-    // You can show a confirmation message or perform other actions here
-    const answer = window.confirm('You have unsaved changes. Are you sure you want to leave?')
-    if (answer) {
-      tx.retry() // Retry the navigation
-    }
-  }
-}
+// const navigationBlocker = (tx) => {
+//   if (true) {
+//     // You can show a confirmation message or perform other actions here
+//     const answer = window.confirm('You have unsaved changes. Are you sure you want to leave?')
+//     if (answer) {
+//       tx.retry() // Retry the navigation
+//     }
+//   }
+// }
 
 function RHFProvider({children}) {
   // const [fdata, setfData] = useState(null)
@@ -144,10 +144,11 @@ function RHFProvider({children}) {
     //eslint-disable-next-line
   }, [qrValues])
 
-  useBlocker({
-    blocker: navigationBlocker,
-    when: methods.formState.isDirty, // Pass the condition to the hook
-  })
+  // useBlocker({
+  //   blocker: navigationBlocker,
+  //   when: methods.formState.isDirty, // Pass the condition to the hook
+  // })
+
   const handleClose = () => {
     // handleFormSubmit(data);
     dispatch(setFolderModal(false))

@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
-import {Modal, message} from 'antd'
+import {Modal, Spin, message} from 'antd'
+import {LoadingOutlined} from '@ant-design/icons'
+
 const {axiosInstance} = require('../../../../../axios/index')
 
 interface Props {
@@ -9,10 +11,19 @@ interface Props {
   data: any
   setCouponDiscount: any
   couponDiscount: any
+  loading: boolean
 
   // Add more props as needed
 }
-
+const antIcon = (
+  <LoadingOutlined
+    rev={undefined}
+    style={{
+      fontSize: 20,
+    }}
+    spin
+  />
+)
 const ConfirmBillingModal: React.FC<Props> = ({
   show,
   handleClose,
@@ -20,6 +31,7 @@ const ConfirmBillingModal: React.FC<Props> = ({
   data,
   setCouponDiscount,
   couponDiscount,
+  loading,
 }) => {
   const [inputCouponCode, setInputCouponCode] = useState('')
   const [couponDiscountLoading, setCouponDiscountLoading] = useState(false)
@@ -194,6 +206,7 @@ const ConfirmBillingModal: React.FC<Props> = ({
             }}
             onClick={handleSubmit}
           >
+            {loading && <Spin style={{color: '#ffff'}} indicator={antIcon} />}
             Buy
           </button>
         </div>

@@ -79,14 +79,14 @@ const Card: FC<Props> = ({
             className=' t-w-max t-py-1 t-top-[55px] t-px-1 t-left-0  t-whitespace-nowrap t-rounded-xl'
           >
             {[
-              {label: 'edit', image: 'edit'},
-              {label: 'delete', image: 'delete'},
+              {label: 'Edit', image: 'edit'},
+              {label: 'Delete', image: 'delete'},
             ].map(({label, image}, index) => {
               return (
                 <li
                   key={index.toString()}
                   onClick={() => {
-                    if (label == 'edit') {
+                    if (label == 'Edit') {
                       setEditFolder(true)
                       onEditChange(content.name, content.id)
                     } else {

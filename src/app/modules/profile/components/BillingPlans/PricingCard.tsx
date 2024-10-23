@@ -313,6 +313,7 @@ const PricingCard: React.FC<Props> = ({
 
       <div>
         <ConfirmBillingModal
+          loading={loading}
           show={confirmationModal}
           handleClose={() => {
             setConfirmationModal(false)

@@ -355,6 +355,12 @@ export function QrCodes() {
                   className='bg-[white] t-text-primary t-cursor-pointer'
                 />
               </Link>
+              <Link to='/dashboard/create-qr-bulk'>
+                <Button
+                  Name='Create Bulk QR'
+                  className='bg-[white] t-text-primary t-cursor-pointer'
+                />
+              </Link>
             </div>
           )}
         </div>

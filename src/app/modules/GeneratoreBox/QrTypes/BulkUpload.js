@@ -220,7 +220,7 @@ const BulkUpload = () => {
 
   return (
     <div className=''>
-      <div className='t-flex t-justify-between'>
+      <div className='t-flex t-justify-between flex-wrap'>
         <div className='t-flex t-gap-4 t-pb-3'>
           {options.map(({title, isSelected, value, id}, index) => (
             <div className='t-relative' key={index}>

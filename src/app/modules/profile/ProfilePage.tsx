@@ -84,7 +84,7 @@ const ProfilePage = () => (
           </>
         }
       />
-      <Route path='create-qr/' element={<GeneratorBox />} />
+      <Route path='create-qr/' element={<GeneratorBox mode='ALL' />} />
       <Route
         path='billing'
         element={
