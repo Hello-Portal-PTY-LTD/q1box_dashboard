@@ -193,7 +193,7 @@ export function Analytics() {
           onClick={() => {
             navigate('/dashboard/plans')
           }}
-          className='t-bg-primary t-cursor-pointer t-rounded-[50px] t-font-bold t-text-center t-p-2 t-text-white t-w-[85%] md:t-w-[30%] t-mx-auto'
+          className='t-bg-primary t-cursor-pointer t-rounded-[50px] t-font-bold t-text-center t-p-2 t-px-4 t-text-white md:t-w-[45%] t-mx-auto'
         >
           <p className='t-text-[14px] 500:t-text-[18.7px] t-font-medium t-text-center'>
             Upgrade your plan to UNLOCK complete Analytics.

@@ -44,7 +44,7 @@ export function AdminAnalytics() {
 
   const fetchData = async () => {
     const response = await axios.get(
-      `${process.env.REACT_APP_QR_API}/v1/analytics/admin/analytics?duration=${duration}`
+      `${process.env.REACT_APP_QR_API}analytics/admin/analytics?duration=${duration}`
     )
     setAnalyticsData(response.data)
   }

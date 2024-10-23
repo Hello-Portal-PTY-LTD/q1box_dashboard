@@ -29,7 +29,7 @@ const MasterLayout = () => {
   }, [location.key])
 
   useEffect(() => {
-    dispatch(getTransactions('id'))
+    dispatch(getTransactions())
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

@@ -14,19 +14,28 @@ import {TAB_BAR} from './utils/mock'
 import {PLUS_MINUS_ICONS as icons} from './utils/mock'
 import {getUserQrFolders} from 'store/qrStore/qrAction'
 import {Collapse, message} from 'antd'
+import {BulkUpload} from './QrTypes'
 import {PreviewAdvanceLinks, PreviewCoupan, PreviewMenu, VideoPreview} from './Preview'
 import PreviewSocial from './Preview/PreviewSocial'
 const {Panel} = Collapse
 
-function GeneratorBox() {
-  const [currentQrType, setCurrentQrType] = useState('Url')
-  const {barCode, auth} = useSelector((state) => state)
-  const formsThatHavePreview = ['AdvanceLinks', 'Video', 'Social', 'Coupon', 'Menu']
+function GeneratorBox({mode}) {
   const dispatch = useDispatch()
+  const {barCode, auth} = useSelector((state) => state)
+
+  const formsThatHavePreview = ['AdvanceLinks', 'Video', 'Social', 'Coupon', 'Menu']
+
+  const initialQrType = mode === 'BULK' ? 'BulkUpload' : barCode.qrType || 'Url'
+  const [currentQrType, setCurrentQrType] = useState(initialQrType)
 
   useEffect(() => {
-    setCurrentQrType(barCode.qrType)
-  }, [barCode.qrType])
+    if (mode === 'BULK') {
+      setCurrentQrType('BulkUpload')
+      dispatch(setQrType('BulkUpload'))
+    } else {
+      setCurrentQrType(barCode.qrType || 'Url')
+    }
+  }, [mode, barCode.qrType])
 
   useEffect(() => {
     dispatch(getUserQrFolders(auth?.user?.id))
@@ -140,17 +149,24 @@ function GeneratorBox() {
                 }
                 key='1'
               >
-                <>
-                  <TabBar
-                    handleCurrentQrType={(label) => {
-                      handleCurrentQrType(label)
-                    }}
-                  />
+                {mode === 'BULK' && (
                   <div className='my-8'>
-                    <ConditionalQrComponent condition={currentQrType} />
+                    <BulkUpload />
                   </div>
-                  {/* <QrFolderComponet /> */}
-                </>
+                )}
+                {mode === 'ALL' && (
+                  <>
+                    <TabBar
+                      handleCurrentQrType={(label) => {
+                        handleCurrentQrType(label)
+                      }}
+                    />
+                    <div className='my-8'>
+                      <ConditionalQrComponent condition={currentQrType} />
+                    </div>
+                    {/* <QrFolderComponet /> */}
+                  </>
+                )}
               </Panel>
               <Panel
                 showArrow={false}
