@@ -14,18 +14,18 @@ const api = createApi({
   endpoints: (builder) => ({
     getTimeBasedAnalytics: builder.query({
       query: ({timePeriod, userId}) =>
-        `v1/analytics/time-based?timePeriod=${timePeriod}&userId=${userId}`,
+        `analytics/time-based?timePeriod=${timePeriod}&userId=${userId}`,
     }),
     getCountByUser: builder.query({
       query: ({userId, timePeriod}) =>
-        `v1/analytics/count?userId=${userId}&timePeriod=${timePeriod}`,
+        `analytics/count?userId=${userId}&timePeriod=${timePeriod}`,
     }),
     getAnalytics: builder.query({
       query: ({userId, groupBy, timePeriod}) =>
-        `v1/analytics/?userId=${userId}&groupBy=${groupBy}&timePeriod=${timePeriod}`,
+        `analytics/?userId=${userId}&groupBy=${groupBy}&timePeriod=${timePeriod}`,
     }),
     getLocationViseAnalytics: builder.query({
-      query: ({userId}) => `v1/analytics/locations?userId=${userId}`,
+      query: ({userId}) => `analytics/locations?userId=${userId}`,
     }),
   }),
 })
